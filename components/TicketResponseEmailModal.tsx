@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
 
 interface TicketResponseEmailProps {
@@ -14,24 +14,26 @@ const TicketResponseEmailModal: React.FC<TicketResponseEmailProps> = ({
     console.log(
       `Would normally send email here mailto:${email} body:${responseEmail}`
     );
+    Alert.alert("Email sent!")
     closeModal();
   };
 
   return (
-    <View style={styles.centeredView}>
+    <ScrollView contentContainerStyle={styles.centeredView}>
       <View style={styles.modalView}>
-        <View style={styles.inlineRow}>
-          <Text>Send a response email to {email}</Text>
-          <Pressable onPress={closeModal}   style={styles.button}>
+      <Pressable onPress={closeModal}   style={styles.button}>
             <Text>Close Modal</Text>
           </Pressable>
-        </View>
+        {/* <View style={styles.inlineRow}>
+          <Text>Send a response email to {email}</Text>
+        
+        </View> */}
 
         <TextInput
           style={styles.input}
           onChangeText={onChangeResponseEmail}
           value={responseEmail}
-          placeholder="Enter your response."
+          placeholder={`Send a response email to ${email}`}
           multiline
         />
         <Pressable
@@ -41,7 +43,7 @@ const TicketResponseEmailModal: React.FC<TicketResponseEmailProps> = ({
           <Text>Submit</Text>
         </Pressable>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -49,18 +51,19 @@ export default TicketResponseEmailModal;
 
 const styles = StyleSheet.create({
   centeredView: {
-    flex: 1,
-    justifyContent: "center",
+    // flex: 1,
+    // justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
+    // marginTop: 22,
   },
   modalView: {
-    margin: 20,
+    // margin: 20,
     backgroundColor: "white",
-    borderRadius: 20,
+    // borderRadius: 20,
     padding: 35,
-    width: 500,
-    height: 500,
+    // width: 500,
+    // height: 500,
+    width: '100%', 
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {

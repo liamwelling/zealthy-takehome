@@ -3,65 +3,23 @@ import {
   Text,
   View,
   ScrollView,
-  SafeAreaView,
-  ActivityIndicator,
   FlatList,
   ListRenderItem,
   Modal,
   Pressable,
+  TextInput 
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Image } from "expo-image";
-import { TextInput } from "react-native-gesture-handler";
 import { supabase } from "../config/initSupabase";
 import { useFocusEffect } from "expo-router";
 import { Picker } from "@react-native-picker/picker";
 import TicketResponseEmailModal from "@/components/TicketResponseEmailModal";
 
-type Item = {
-  id: string;
-  name: string;
-  email: string;
-  description: string;
-  photoURL: string;
-  status: number;
-};
-
-// const ItemComponent = React.memo(({ item, updateItemStatus }: { item: Item; updateItemStatus: (id: string, status: number) => void }) => (
-//   <View style={styles.itemContainer}>
-//     <View>
-//       <Text>
-//         Status:
-//         {item.status === 1 && <Text> New</Text>}
-//         {item.status === 2 && <Text> In Progress</Text>}
-//         {item.status === 3 && <Text> Resolved</Text>}
-//       </Text>
-//     </View>
-//     <Picker
-//       selectedValue={item.status}
-//       onValueChange={(itemValue) => updateItemStatus(item.id, itemValue)}
-//     >
-//       <Picker.Item label="New" value={1} />
-//       <Picker.Item label="In Progress" value={2} />
-//       <Picker.Item label="Resolved" value={3} />
-//     </Picker>
-//     <Text>Name: {item.name}</Text>
-//     <Text>Email: {item.email}</Text>
-//     <Text>Description: {item.description}</Text>
-//     <Image
-//       source={{
-//         uri: `https://sakovsazciadirzdbahs.supabase.co/storage/v1/object/public/${item.photoURL}`,
-//       }}
-//       style={{ width: 400, height: 400 }}
-//     />
-//   </View>
-// ));
-
 const admin = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState();
   const itemsRef = useRef<{ [key: string]: Item }>({});
   const [modalVisible, setModalVisible] = useState(false);
-  const [password, onChangePassword] = useState<string>("");
+  const [password, onChangePassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [responseData, setResponseData] = useState<Item[]>([]);
   const [responseEmail, setResponseEmail] = useState<string>("");
@@ -69,14 +27,13 @@ const admin = () => {
     setModalVisible(false);
   };
   useEffect(() => {
-    if (password == "admin") {
+    if (password.toLowerCase() == "admin" ) {
       setAuthenticated(true);
     }
   }, [password]);
 
   useFocusEffect(
     useCallback(() => {
-      // Your fetch data function
       const fetchData = async () => {
         const { data, error } = await supabase.from("ticket-table").select();
         if (error) {
@@ -95,15 +52,10 @@ const admin = () => {
       };
 
       fetchData();
-
-      // Optional: Return a cleanup function if needed
-      return () => {
-        // Any cleanup code
-      };
     }, [])
   );
   type Item = {
-    id: string; // or number
+    id: string; 
     name: string;
     email: string;
     description: string;
@@ -111,14 +63,11 @@ const admin = () => {
     status: number;
   };
   const updateItemStatus = async (itemId: string, newStatus: number) => {
-    // Update local state
-    setResponseData((prevItem: any) =>
-      prevItem.map((item: any) =>
+    setResponseData((prevItem: Item[]) =>
+      prevItem.map((item: Item) =>
         item.id === itemId ? { ...item, status: newStatus } : item
       )
     );
-
-    // Update Supabase
     const { data, error } = await supabase
       .from("ticket-table")
       .update({ status: newStatus })
@@ -126,7 +75,6 @@ const admin = () => {
 
     if (error) {
       console.error("Error updating status in Supabase:", error);
-      // Optionally, revert the local state change if the update failed
     } else {
       console.log(data);
     }
@@ -137,9 +85,6 @@ const admin = () => {
       <View style={styles.inlineRow}>
         <Text style={styles.containerText}>
           Status:
-          {/* {item.status === 1 && <Text> New</Text>}
-          {item.status === 2 && <Text> In Progress</Text>}
-          {item.status === 3 && <Text> Resolved</Text>} */}
         </Text>
         <Picker
           selectedValue={item.status}
@@ -158,7 +103,7 @@ const admin = () => {
         source={{
           uri: `https://sakovsazciadirzdbahs.supabase.co/storage/v1/object/public/${item.photoURL}`,
         }}
-        style={{ width: 300, height: 300, padding: 20, marginBottom: 20 }}
+        style={styles.image}
       />
       <Pressable
         style={styles.button}
@@ -169,14 +114,14 @@ const admin = () => {
       >
         <Text style={styles.textStyle}>Respond</Text>
       </Pressable>
-      <TextInput />
+      
     </View>
   );
 
   return (
     <ScrollView
+      showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        flex: 1,
         justifyContent: "center",
         alignItems: "center",
       }}
@@ -194,34 +139,29 @@ const admin = () => {
           closeModal={closeModal}
         />
       </Modal>
-      {/* <ScrollView contentContainerStyle={styles.container}> */}
-      <Text style={styles.headerText}>Admin Pannel</Text>
-      {/* <ActivityIndicator /> */}
+      <Text style={styles.headerText}>Admin</Text>
+ 
+      {!authenticated ? (
+       
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Password!"
+            onChangeText={onChangePassword}
+            value={password}
+        
+          />
+  
+      ) : (
+        <>
       <FlatList
+      
         data={responseData}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />
-      {/* {!authenticated ? (
-        <>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Password!"
-            onChangeText={(newText) => onChangePassword(newText)}
-            defaultValue={password}
-          />
-        </>
-      ) : (
-        <>
-            <FlatList
-      data={responseData}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.id}
-    />
 
         </>
-      )} */}
-      {/* </ScrollView> */}
+      )}
     </ScrollView>
   );
 };
@@ -233,7 +173,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     marginTop: 20,
-    // justifyContent: 'center',
   },
   headerText: {
     fontSize: 30,
@@ -243,6 +182,14 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
   },
   itemContainer: {
     backgroundColor: "white",
@@ -257,6 +204,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    flexDirection: 'column',
+    flexWrap: 'wrap',
+    maxWidth: "auto"
   },
   inlineRow: {
     flexDirection: "row",
@@ -269,7 +219,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    backgroundColor: "#cfcfcf"
+    backgroundColor: "#cfcfcf",
   },
 
   textStyle: {
@@ -277,4 +227,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
+  image: {
+    width: 200,
+    height: 200,
+    padding: 20,
+    marginBottom: 20,
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginTop: 10,
+  }
 });
