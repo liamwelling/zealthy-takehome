@@ -1,4 +1,4 @@
-import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
 
 interface TicketResponseEmailProps {
@@ -14,8 +14,7 @@ const TicketResponseEmailModal: React.FC<TicketResponseEmailProps> = ({
     console.log(
       `Would normally send email here mailto:${email} body:${responseEmail}`
     );
-    Alert.alert("Email sent!")
-    closeModal();
+     closeModal();
   };
 
   return (
@@ -24,11 +23,7 @@ const TicketResponseEmailModal: React.FC<TicketResponseEmailProps> = ({
       <Pressable onPress={closeModal}   style={styles.button}>
             <Text>Close Modal</Text>
           </Pressable>
-        {/* <View style={styles.inlineRow}>
-          <Text>Send a response email to {email}</Text>
-        
-        </View> */}
-
+      
         <TextInput
           style={styles.input}
           onChangeText={onChangeResponseEmail}
@@ -51,18 +46,11 @@ export default TicketResponseEmailModal;
 
 const styles = StyleSheet.create({
   centeredView: {
-    // flex: 1,
-    // justifyContent: "center",
     alignItems: "center",
-    // marginTop: 22,
   },
   modalView: {
-    // margin: 20,
     backgroundColor: "white",
-    // borderRadius: 20,
     padding: 35,
-    // width: 500,
-    // height: 500,
     width: '100%', 
     alignItems: "center",
     shadowColor: "#000",
@@ -85,7 +73,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    backgroundColor: "#F194FF"
+    backgroundColor: "#808080"
   },
 
   inlineRow: {
