@@ -10,8 +10,8 @@ import {
   Alert,
 } from "react-native";
 import { Image } from "expo-image";
-
 import { supabase } from "../config/initSupabase";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Index() {
   const [name, onChangeName] = useState("");
@@ -28,7 +28,8 @@ export default function Index() {
     // and the file url to the "ticket-table" in the database
     if (!selectedFile) return;
     setUploading(true);
-    const filePath = `photos/${selectedFile.name}`;
+    const fileName = uuidv4();
+    const filePath = `photos/${fileName}`;
     const { data, error } = await supabase.storage
       .from("ticket")
       .upload(filePath, selectedFile);
